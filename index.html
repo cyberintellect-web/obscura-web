@@ -3,232 +3,294 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Obscura | Execute Without Limits</title>
+    <title>Obscura — The Pro Executor</title>
     <style>
         :root {
-            --bg-dark: #000000;
-            --main-purple: #ae47ff;
-            --purple-glow: rgba(174, 71, 255, 0.4);
-            --text-main: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.7);
-            --nav-bg: rgba(5, 5, 5, 0.8);
+            --black: #000000;
+            --white: #ffffff;
+            --gray-900: #111111;
+            --gray-800: #333333;
+            --gray-400: #888888;
+            --purple: #ae47ff;
+            --purple-glow: rgba(174, 71, 255, 0.5);
+            --geist-error: #ff0000;
+            --geist-success: #0070f3; /* Next.js Blue */
+            --border-radius: 8px;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            scroll-behavior: smooth;
+            font-family: 'Geist', 'Inter', -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
         body {
-            background-color: var(--bg-dark);
-            background-image: radial-gradient(circle at center, #1a0229 0%, #000000 80%);
-            color: var(--text-main);
+            background-color: var(--black);
+            color: var(--white);
             overflow-x: hidden;
+            /* Next.js Grid Background */
+            background-image: 
+                linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: radial-gradient(ellipse 60% 50% at 50% 0%, #000 70%, transparent 100%);
         }
 
-        /* --- Updated Navigation Bar --- */
+        /* --- Navigation --- */
         nav {
             position: fixed;
             top: 0;
-            left: 0;
             width: 100%;
-            display: flex;
-            justify-content: center;
-            padding: 20px 0;
             z-index: 1000;
-            background: var(--nav-bg);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: saturate(180%) blur(5px);
+            border-bottom: 1px solid var(--gray-800);
         }
 
-        .nav-container {
-            width: 90%;
-            max-width: 1200px;
+        .nav-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            height: 64px;
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
+            padding: 0 24px;
         }
 
-        .logo-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            color: white;
-        }
-
-        .logo-box {
-            width: 35px;
-            height: 35px;
-            background: var(--main-purple);
-            border-radius: 8px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: 800;
-            box-shadow: 0 0 15px var(--purple-glow);
-        }
-
-        .logo-text {
-            font-size: 1.2rem;
+        .logo {
             font-weight: 700;
-            letter-spacing: 1px;
-        }
-
-        .nav-menu {
-            display: flex;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 6px;
-            border-radius: 12px;
-            list-style: none;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .nav-menu a {
-            text-decoration: none;
-            color: var(--text-secondary);
-            padding: 8px 20px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: 0.3s;
+            letter-spacing: -1px;
+            font-size: 1.2rem;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
-        .nav-menu a:hover, .nav-menu a.active {
-            color: white;
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .nav-right {
+        .logo-glyph {
+            background: var(--white);
+            color: var(--black);
+            width: 24px;
+            height: 24px;
             display: flex;
             align-items: center;
-            gap: 20px;
-        }
-
-        .btn-nav-download {
-            background: var(--main-purple);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            box-shadow: 0 0 15px var(--purple-glow);
-            transition: 0.3s;
-        }
-
-        .btn-nav-download:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 25px var(--purple-glow);
-        }
-
-        /* --- Hero Section --- */
-        .hero {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
             justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding-top: 80px;
-        }
-
-        .version-tag {
-            background: rgba(174, 71, 255, 0.1);
-            color: #d199ff;
-            padding: 8px 16px;
-            border-radius: 20px;
+            border-radius: 4px;
             font-size: 0.8rem;
-            border: 1px solid rgba(174, 71, 255, 0.2);
-            margin-bottom: 20px;
         }
 
-        h1 {
-            font-size: clamp(3rem, 8vw, 5.5rem);
-            line-height: 1;
-            margin-bottom: 20px;
-            text-shadow: 0 0 30px var(--purple-glow);
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            font-size: 0.85rem;
+            color: var(--gray-400);
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: inherit;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: var(--white); }
+
+        /* --- Hero --- */
+        .hero {
+            padding: 160px 24px 80px;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 10vw, 5rem);
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            margin-bottom: 24px;
+            background: linear-gradient(180deg, #fff 0%, #adadad 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .hero p {
-            max-width: 600px;
-            color: var(--text-secondary);
-            font-size: 1.1rem;
+            color: var(--gray-400);
+            font-size: 1.25rem;
+            line-height: 1.6;
             margin-bottom: 40px;
         }
 
-        .hero-btns {
-            display: flex;
-            gap: 20px;
-        }
-
-        .btn-main {
-            padding: 16px 32px;
-            border-radius: 12px;
+        /* --- Next.js Shimmer Button --- */
+        .shimmer-btn {
+            background: var(--white);
+            color: var(--black);
+            padding: 12px 32px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
             text-decoration: none;
-            font-weight: 700;
-            transition: 0.3s;
+            font-size: 0.95rem;
+            border: 1px solid var(--white);
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
         }
 
-        .btn-purple {
-            background: var(--main-purple);
-            color: white;
-            box-shadow: 0 10px 20px rgba(174, 71, 255, 0.2);
+        .shimmer-btn:hover {
+            background: transparent;
+            color: var(--white);
         }
 
-        .btn-outline {
+        /* --- Download Container --- */
+        .card {
+            max-width: 500px;
+            margin: 40px auto;
+            background: var(--gray-900);
+            border: 1px solid var(--gray-800);
+            border-radius: 12px;
+            padding: 32px;
+            position: relative;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            background: linear-gradient(45deg, transparent, var(--purple), transparent);
+            z-index: -1;
+            border-radius: 13px;
+            opacity: 0.3;
+        }
+
+        /* --- Loader Styling --- */
+        .loader-bar {
+            height: 2px;
+            width: 100%;
+            background: var(--gray-800);
+            margin: 24px 0;
+            overflow: hidden;
+        }
+
+        .loader-progress {
+            height: 100%;
+            width: 0%;
+            background: var(--white);
+            transition: width 0.3s ease;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             background: rgba(255,255,255,0.05);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.1);
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            border: 1px solid var(--gray-800);
+            margin-bottom: 16px;
         }
 
-        .btn-main:hover {
-            transform: translateY(-3px);
+        .hidden { display: none; }
+
+        footer {
+            margin-top: 100px;
+            padding: 40px;
+            border-top: 1px solid var(--gray-800);
+            text-align: center;
+            color: var(--gray-400);
+            font-size: 0.8rem;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .nav-menu { display: none; }
-        }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="nav-container">
-            <a href="index.html" class="logo-group">
-                <div class="logo-box">O</div>
-                <div class="logo-text">OBSCURA</div>
-            </a>
-
-            <ul class="nav-menu">
-                <li><a href="index.html" class="active">Home</a></li>
-                <li><a href="download.html">Downloads</a></li>
-                <li><a href="#">Admin</a></li>
-            </ul>
-
-            <div class="nav-right">
-                <a href="download.html" class="btn-nav-download">Get Obscura</a>
+        <div class="nav-inner">
+            <div class="logo">
+                <div class="logo-glyph">▲</div>
+                OBSCURA
             </div>
+            <div class="nav-links">
+                <a href="#">Showcase</a>
+                <a href="#">Docs</a>
+                <a href="#">Pricing</a>
+            </div>
+            <a href="https://gofile.io/d/jYQdZY" class="shimmer-btn" style="padding: 8px 16px; font-size: 0.8rem;">Deploy</a>
         </div>
     </nav>
 
-    <section class="hero">
-        <div class="version-tag">✨ Version 2.4.1 Now Available</div>
-        <h1>Execute<br>Without Limits</h1>
-        <p>The most powerful and undetectable Roblox executor. Lightning-fast execution, 100% uptime, and the largest script library.</p>
-        
-        <div class="hero-btns">
-            <a href="download.html" class="btn-main btn-purple">Download Now</a>
-            <a href="#features" class="btn-main btn-outline">View Features</a>
+    <div class="hero">
+        <div class="status-pill">
+            <span style="color: #00ff88">●</span> Obscura 2.4.1 is now live
         </div>
-    </section>
+        <h1>The Executor for <br> modern scripters.</h1>
+        <p>A high-performance execution engine designed for the next generation of Roblox automation. Built for speed, focused on security.</p>
+        
+        <div class="card" id="main-card">
+            <div id="initial-ui">
+                <h2 style="margin-bottom: 8px;">Start executing</h2>
+                <p style="color: var(--gray-400); font-size: 0.9rem; margin-bottom: 24px;">Deploy Obscura to your local machine in seconds.</p>
+                <button onclick="triggerDeploy()" class="shimmer-btn" style="width: 100%;">Initialize Deployment</button>
+            </div>
 
+            <div id="loading-ui" class="hidden">
+                <div style="font-size: 0.9rem; font-family: monospace;" id="load-msg">building_package...</div>
+                <div class="loader-bar">
+                    <div class="loader-progress" id="progress"></div>
+                </div>
+            </div>
+
+            <div id="success-ui" class="hidden">
+                <h2 style="color: var(--white); margin-bottom: 16px;">Successfully Built</h2>
+                <a href="https://gofile.io/d/jYQdZY" class="shimmer-btn" style="width: 100%; background: #0070f3; color: white; border-color: #0070f3;">Download Obscura_v2.4.1.zip</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Created by Obscura Labs. This software is not affiliated with Roblox.</p>
+    </footer>
+
+    <script>
+        function triggerDeploy() {
+            const initial = document.getElementById('initial-ui');
+            const loading = document.getElementById('loading-ui');
+            const success = document.getElementById('success-ui');
+            const bar = document.getElementById('progress');
+            const msg = document.getElementById('load-msg');
+
+            initial.classList.add('hidden');
+            loading.classList.remove('hidden');
+
+            const steps = [
+                "optimizing_scripts...",
+                "generating_static_bypasses...",
+                "verifying_unc_stability...",
+                "collecting_assets...",
+                "ready_for_deployment"
+            ];
+
+            let progress = 0;
+            let stepIndex = 0;
+
+            const interval = setInterval(() => {
+                progress += Math.random() * 20;
+                if (progress >= 100) {
+                    progress = 100;
+                    bar.style.width = '100%';
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        loading.classList.add('hidden');
+                        success.classList.remove('hidden');
+                    }, 500);
+                }
+                
+                bar.style.width = progress + '%';
+                msg.innerText = steps[Math.min(stepIndex, steps.length - 1)];
+                stepIndex++;
+            }, 600);
+        }
+    </script>
 </body>
 </html>
