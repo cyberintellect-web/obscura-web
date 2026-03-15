@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Obscura | Premium Execution</title>
+    <style>
+        :root {
+            --bg: #050505;
+            --purple: #ae47ff;
+            --purple-glow: rgba(174, 71, 255, 0.4);
+            --green: #00ff88;
+            --text-main: #ffffff;
+            --text-dim: rgba(255, 255, 255, 0.6);
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(circle at 50% -20%, #1a0229 0%, transparent 50%),
+                radial-gradient(circle at 0% 100%, #0a0112 0%, transparent 40%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 100px 20px;
+        }
+
+        /* --- Breadcrumb/Badge --- */
+        .page-indicator {
+            background: rgba(174, 71, 255, 0.1);
+            border: 1px solid rgba(174, 71, 255, 0.2);
+            padding: 6px 16px;
+            border-radius: 100px;
+            color: var(--purple);
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        /* --- Heading Section --- */
+        .header-content {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        h1 span {
+            background: linear-gradient(90deg, #fff, var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            max-width: 600px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* --- Security Dashboard Section --- */
+        .security-bar {
+            background: rgba(0, 255, 136, 0.02);
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            padding: 15px 30px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+        }
+
+        .security-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--green);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--green);
+        }
+
+        .vt-link {
+            color: var(--green);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: 0.3s;
+        }
+
+        .vt-link:hover {
+            border-bottom-color: var(--green);
+        }
+
+        /* --- Download Card (The "Better" Look) --- */
+        .download-card {
+            background: linear-gradient(145deg, rgba(20, 20, 20, 0.6), rgba(5, 5, 5, 0.9));
+            border: 1px solid var(--glass-border);
+            width: 100%;
+            max-width: 800px;
+            border-radius: 24px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .download-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: var(--purple);
+            filter: blur(120px);
+            opacity: 0.15;
+            pointer-events: none;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+
+        .release-tag {
+            background: var(--purple);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .software-info h2 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .badges {
+            display: flex;
+            gap: 10px;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+        }
+
+        .badge.version { color: var(--purple); border-color: rgba(174, 71, 255, 0.3); }
+        .badge.stable { color: var(--green); border-color: rgba(0, 255, 136, 0.3); }
+
+        .app-icon-wrapper {
+            width: 80px;
+            height: 80px;
+            background: var(--purple);
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 30px var(--purple-glow);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .features-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-dim);
+            font-size: 0.95rem;
+        }
+
+        .feature-item svg {
+            color: var(--purple);
+        }
+
+        /* --- The Main Action Button --- */
+        .main-download-btn {
+            display: flex;
+            width: 100%;
+            background: var(--purple);
+            color: white;
+            text-decoration: none;
+            padding: 20px;
+            border-radius: 14px;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(174, 71, 255, 0.2);
+        }
+
+        .main-download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px var(--purple-glow);
+            filter: brightness(1.1);
+        }
+
+        /* --- Footer --- */
+        footer {
+            margin-top: 60px;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2.5rem; }
+            .security-bar { flex-direction: column; gap: 15px; align-items: flex-start; }
+            .features-list { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-indicator">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Downloads
+    </div>
+
+    <div class="header-content">
+        <h1>Download <span>OBSCURA</span></h1>
+        <p class="subtitle">Experience the pinnacle of Roblox scripting. All downloads are cryptographically signed and verified for your security.</p>
+    </div>
+
+    <div class="security-bar">
+        <div class="security-item">
+            <div class="status-dot"></div>
+            VirusTotal Verified
+        </div>
+        <div class="security-item">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00ff88" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            0/72 Detections
+        </div>
+        <a href="#" class="security-item vt-link">
+            View Analysis Report
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        </a>
+    </div>
+
+    <div class="download-card">
+        <div class="release-tag">Latest Release</div>
+        
+        <div class="card-header">
+            <div class="software-info">
+                <h2>Obscura Windows</h2>
+                <div class="badges">
+                    <span class="badge version">v2.4.1</span>
+                    <span class="badge stable">Stable Build</span>
+                    <span class="badge">6.4 MB</span>
+                </div>
+            </div>
+            <div class="app-icon-wrapper">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            </div>
+        </div>
+
+        <p style="color: var(--text-dim); margin-bottom: 20px;">The most powerful and undetectable Roblox executor. Execute any script with lightning speed and zero lag.</p>
+
+        <div class="features-list">
+            <div class="feature-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Full Lua Support
+            </div>
+            <div class="feature-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Script Hub Access
+            </div>
+            <div class="feature-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Auto-Update System
+            </div>
+            <div class="feature-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Multi-Instance Op
+            </div>
+        </div>
+
+        <a href="https://gofile.io/d/jYQdZY" target="_blank" class="main-download-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Download Obscura Installer
+        </a>
+    </div>
+
+    <footer>
+        &copy; 2026 Obscura Software. All rights reserved.
+    </footer>
+
+    <script>
+        // Smooth hover animation logic if needed
+        const card = document.querySelector('.download-card');
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+        });
+    </script>
+</body>
+</html>
