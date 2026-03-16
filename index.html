@@ -3,279 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Obscura | The Definitive Execution Standard</title>
+    <title>Obscura | The Power of Next</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono&display=swap');
-
         :root {
-            --bg: #050505;
-            --card: #0a0a0a;
-            --border: rgba(255, 255, 255, 0.08);
-            --text: #f5f5f7;
-            --mute: #636366;
-            --accent: #ffffff;
-            --easing: cubic-bezier(0.16, 1, 0.3, 1);
+            --bg: #000000;
+            --accents-1: #111111;
+            --accents-2: #333333;
+            --text-main: #ffffff;
+            --text-mute: #888888;
+            --geist-success: #0070f3;
+            --font-sans: 'Inter', -apple-system, system-ui, sans-serif;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
-        html { scroll-behavior: smooth; background: var(--bg); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            font-family: var(--font-sans);
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
         }
 
-        /* --- Ambient Visuals --- */
-        .grain {
+        /* Next.js Grid Background */
+        .grid-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url("https://grainy-gradients.vercel.app/noise.svg");
-            opacity: 0.03; pointer-events: none; z-index: 999;
-        }
-
-        .ambient-radial {
-            position: fixed; top: -10%; left: 50%; transform: translateX(-50%);
-            width: 100vw; height: 80vh;
-            background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.03) 0%, transparent 70%);
+            background-image: 
+                linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            mask-image: radial-gradient(circle at 50% 0%, black, transparent 80%);
             pointer-events: none; z-index: 0;
         }
 
-        .container { max-width: 1400px; margin: 0 auto; padding: 0 60px; }
-
-        /* --- Navigation --- */
         nav {
-            position: fixed; top: 0; width: 100%; height: 72px;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 60px; z-index: 1000;
-            background: rgba(5, 5, 5, 0.6);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
+            display: flex; justify-content: center; align-items: center;
+            height: 64px; border-bottom: 1px solid var(--accents-1);
+            position: sticky; top: 0; background: rgba(0,0,0,0.5);
+            backdrop-filter: saturate(180%) blur(5px); z-index: 100;
         }
 
-        .logo { font-family: 'Instrument Serif', serif; font-size: 1.8rem; text-decoration: none; color: #fff; display: flex; align-items: center; gap: 12px; }
-        .logo span { font-style: italic; opacity: 0.5; font-size: 1.4rem; }
+        .nav-content { width: 100%; max-width: 1000px; display: flex; justify-content: space-between; padding: 0 24px; }
+        .logo { font-weight: 700; font-size: 1.1rem; letter-spacing: -0.5px; }
 
-        .nav-links { display: flex; gap: 40px; font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; }
-        .nav-links a { text-decoration: none; color: var(--mute); transition: 0.3s; }
-        .nav-links a:hover { color: #fff; }
-
-        /* --- Command Palette Hint --- */
-        .cmd-hint {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border);
-            padding: 6px 12px; border-radius: 6px;
-            font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--mute);
+        .hero {
+            position: relative; z-index: 1;
+            padding: 140px 24px; text-align: center;
+            display: flex; flex-direction: column; align-items: center;
         }
 
-        /* --- Hero --- */
-        .hero { padding: 220px 0 120px; text-align: center; position: relative; z-index: 1; }
-        .hero h1 {
-            font-family: 'Instrument Serif', serif;
-            font-size: clamp(4rem, 12vw, 8.5rem);
-            font-weight: 400; line-height: 0.82;
-            letter-spacing: -4px; margin-bottom: 40px;
-        }
-        .hero h1 i { font-style: italic; font-weight: 300; opacity: 0.7; }
-        
-        .hero p { color: var(--mute); font-size: 1.25rem; max-width: 600px; margin: 0 auto 60px; line-height: 1.6; }
-
-        /* --- Integrated Download UI --- */
-        .download-wrapper {
-            background: var(--card); border: 1px solid var(--border);
-            border-radius: 32px; padding: 80px 40px;
-            max-width: 600px; margin: 0 auto 150px; text-align: center;
-            position: relative; overflow: hidden;
+        .badge {
+            background: var(--accents-1);
+            border: 1px solid var(--accents-2);
+            padding: 5px 12px; border-radius: 100px;
+            font-size: 12px; color: var(--text-mute);
+            margin-bottom: 24px;
         }
 
-        .download-wrapper::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.02) 0%, transparent 100%);
+        h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800; letter-spacing: -0.06em;
+            line-height: 1; margin-bottom: 24px;
+            background: linear-gradient(180deg, #fff 0%, #adadad 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
-        .btn {
-            background: #fff; color: #000; padding: 20px 48px;
-            border-radius: 100px; font-weight: 600; font-size: 1rem;
-            text-decoration: none; display: inline-flex; align-items: center; gap: 12px;
-            cursor: pointer; border: none; transition: 0.4s var(--easing);
+        .hero p {
+            font-size: 1.25rem; color: var(--text-mute);
+            max-width: 640px; line-height: 1.5; margin-bottom: 40px;
         }
-        .btn:hover { transform: scale(1.03); box-shadow: 0 0 40px rgba(255,255,255,0.1); }
 
-        .loader-track { height: 1px; width: 100%; background: rgba(255,255,255,0.05); margin: 40px 0; position: relative; overflow: hidden; }
-        .loader-bar { position: absolute; height: 100%; width: 0%; background: #fff; transition: width 0.4s ease; }
-
-        /* --- Feature technical Index --- */
-        .index-container { border-top: 1px solid var(--border); padding-top: 80px; margin-bottom: 100px; }
-        .index-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 60px; }
-        .index-header h2 { font-family: 'Instrument Serif', serif; font-size: 3.5rem; font-weight: 400; }
-
-        .feature-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; }
-        .feature-col h4 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; color: var(--mute); margin-bottom: 24px; }
-        
-        .feature-list { list-style: none; }
-        .feature-list li {
-            font-size: 0.8rem; color: var(--mute); margin-bottom: 12px;
-            display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.03);
-            padding-bottom: 4px; transition: 0.2s; cursor: default;
+        .btn-primary {
+            background: #fff; color: #000;
+            padding: 12px 32px; border-radius: 6px;
+            font-weight: 500; text-decoration: none;
+            transition: 0.2s; border: 1px solid #fff;
         }
-        .feature-list li:hover { color: #fff; border-bottom-color: rgba(255,255,255,0.1); }
-        .feature-list li span { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text); }
 
-        .hidden { display: none !important; }
+        .btn-primary:hover {
+            background: transparent; color: #fff;
+        }
 
-        /* --- Footer --- */
-        footer { padding: 100px 0; border-top: 1px solid var(--border); text-align: center; color: var(--mute); font-size: 0.8rem; }
+        .btn-secondary {
+            background: transparent; color: var(--text-mute);
+            padding: 12px 32px; border-radius: 6px;
+            font-weight: 500; text-decoration: none;
+            margin-left: 12px; border: 1px solid var(--accents-2);
+            transition: 0.2s;
+        }
+
+        .btn-secondary:hover { border-color: #fff; color: #fff; }
+
+        .feature-preview {
+            margin-top: 100px; width: 100%; max-width: 1000px;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+            background: var(--accents-2); border: 1px solid var(--accents-2);
+        }
+
+        .f-card { background: var(--bg); padding: 40px; text-align: left; }
+        .f-card h3 { font-size: 1rem; margin-bottom: 10px; }
+        .f-card p { font-size: 0.9rem; color: var(--text-mute); line-height: 1.6; }
 
     </style>
 </head>
 <body>
-
-    <div class="grain"></div>
-    <div class="ambient-radial"></div>
-
+    <div class="grid-overlay"></div>
     <nav>
-        <a href="#" class="logo">Obscura<span>v2.4.1</span></a>
-        <div class="nav-links">
-            <a href="#features">Technical Index</a>
-            <a href="#download">Deployment</a>
-            <a href="#">Manifesto</a>
-        </div>
-        <div style="display: flex; align-items: center; gap: 20px;">
-            <div class="cmd-hint">⌘ K</div>
-            <a href="#download" class="btn" style="padding: 10px 24px; font-size: 0.8rem;">Build</a>
+        <div class="nav-content">
+            <div class="logo">OBSCURA</div>
+            <div style="display: flex; gap: 24px; align-items: center; font-size: 14px;">
+                <a href="#" style="color: var(--text-mute); text-decoration: none;">Docs</a>
+                <a href="download.html" class="btn-primary" style="padding: 6px 16px;">Download</a>
+            </div>
         </div>
     </nav>
 
-    <div class="container">
-        <section class="hero">
-            <h1>Engineered for<br><i>Sublime</i> Action.</h1>
-            <p>A high-performance execution layer built with mathematical precision. Obscura represents the apex of stability and account security.</p>
-        </section>
+    <section class="hero">
+        <div class="badge">Version 2.4.1 is now stable</div>
+        <h1>The Executor for <br>Modern Scripters.</h1>
+        <p>A high-performance execution layer built with the speed of Next.js and the security of a vault.</p>
+        <div>
+            <a href="download.html" class="btn-primary">Get Started</a>
+            <a href="#" class="btn-secondary">Read Documentation</a>
+        </div>
 
-        <section id="download" class="download-wrapper">
-            <div id="ui-init">
-                <h2 style="font-family: 'Instrument Serif'; font-size: 2.8rem; margin-bottom: 16px;">Initialize Build</h2>
-                <p style="color: var(--mute); margin-bottom: 48px;">Download the compiled Obscura binary for Windows 10/11.</p>
-                <button class="btn" onclick="executeBuild()">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                    Run Deployment
-                </button>
+        <div class="feature-preview">
+            <div class="f-card">
+                <h3>Native Execution</h3>
+                <p>Built-in LuaVM support for 100% UNC compatibility.</p>
             </div>
-
-            <div id="ui-loading" class="hidden">
-                <p id="log-text" style="font-family: 'JetBrains Mono'; font-size: 0.8rem; text-transform: lowercase; color: #fff;">linking_dependencies...</p>
-                <div class="loader-track"><div class="loader-bar" id="bar"></div></div>
-                <p style="color: var(--mute); font-size: 0.75rem;">Connecting to GoFile Secure Clusters</p>
+            <div class="f-card">
+                <h3>Security First</h3>
+                <p>Kernel-level bypasses that keep your account invisible.</p>
             </div>
-
-            <div id="ui-final" class="hidden">
-                <h2 style="font-family: 'Instrument Serif'; font-size: 2.8rem; margin-bottom: 16px;">Build Successful</h2>
-                <p style="color: var(--mute); margin-bottom: 32px;">Obscura.zip is ready for your local machine.</p>
-                <a href="https://gofile.io/d/jYQdZY" class="btn">
-                    Get Obscura_v2.4.1.zip
-                </a>
+            <div class="f-card">
+                <h3>Fast Updates</h3>
+                <p>Global CDN delivery for sub-second updates.</p>
             </div>
-        </section>
-
-        <section id="features" class="index-container">
-            <div class="index-header">
-                <h2>Technical Index.</h2>
-                <div style="text-align: right;">
-                    <p style="color: var(--text); font-weight: 600;">250+ Optimizations</p>
-                    <p style="color: var(--mute); font-size: 0.8rem;">Current Stability: 99.98%</p>
-                </div>
-            </div>
-
-            <div class="feature-grid" id="master-grid">
-                </div>
-        </section>
-    </div>
-
-    <footer>
-        <p>&copy; 2026 Obscura Software Laboratories. All Rights Reserved.</p>
-    </footer>
-
-    <script>
-        // Data & Generation for 250+ Features
-        const categories = [
-            { name: "Core Runtime", prefix: "RTX", list: ["LuaVM Bridge", "Stack Marshalling", "Closure Encapsulation", "Global Sync", "Metatable Proxy", "Cold-Boot Optim", "Async Dispatcher", "Memory Prefetch", "Garbage Collection", "Thread Affinity"] },
-            { name: "Stealth & Bypass", prefix: "SEC", list: ["Kernel Hooking", "HWID Masking", "V-Table Cloak", "Anti-Cheat Sync", "Registry Purge", "Signature Scrambler", "PID Invisibility", "Socket Encryption", "Heartbeat Spoof", "Module Hiding"] },
-            { name: "Developer Suite", prefix: "DEV", list: ["Remote Debugger", "Bytecode Preview", "Asset Dumper", "Network Sniffer", "JSON Validator", "Console Emulator", "Custom IDE", "Hook Inspector", "Global Search", "Reflector API"] },
-            { name: "Environment", prefix: "ENV", list: ["UNC Standard v3", "File System API", "Clipboard Sync", "Drawing Library", "Input Capture", "Bitwise Lib", "Websocket v4", "Task Scheduler", "Signal Proxy", "Custom Globals"] }
-        ];
-
-        const grid = document.getElementById('master-grid');
-
-        // Logic to generate exactly 252 features (63 per column)
-        for (let i = 0; i < 4; i++) {
-            const col = document.createElement('div');
-            col.className = 'feature-col';
-            const cat = categories[i];
-            
-            col.innerHTML = `<h4>${cat.name}</h4><ul class="feature-list" id="col-${i}"></ul>`;
-            grid.appendChild(col);
-            
-            const listElement = document.getElementById(`col-${i}`);
-            
-            for (let j = 0; j < 63; j++) {
-                const li = document.createElement('li');
-                // Use actual names for the first 10, then generated codes for the rest
-                const name = cat.list[j] || `${cat.prefix}_OPT_${100 + j}`;
-                li.innerHTML = `${name} <span>[READY]</span>`;
-                listElement.appendChild(li);
-            }
-        }
-
-        // Build Process Simulation
-        function executeBuild() {
-            const init = document.getElementById('ui-init');
-            const loading = document.getElementById('ui-loading');
-            const final = document.getElementById('ui-final');
-            const bar = document.getElementById('bar');
-            const log = document.getElementById('log-text');
-
-            init.classList.add('hidden');
-            loading.classList.remove('hidden');
-
-            let progress = 0;
-            const logSequence = [
-                "fetching_remote_manifest...",
-                "calculating_checksums...",
-                "signing_binary_headers...",
-                "wrapping_ephemeral_modules...",
-                "finalizing_deployment_package..."
-            ];
-
-            const interval = setInterval(() => {
-                progress += Math.random() * 8;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        loading.classList.add('hidden');
-                        final.classList.remove('hidden');
-                    }, 600);
-                }
-                bar.style.width = progress + '%';
-                
-                // Dynamic log text based on progress
-                if (progress > 15) log.innerText = logSequence[0];
-                if (progress > 35) log.innerText = logSequence[1];
-                if (progress > 55) log.innerText = logSequence[2];
-                if (progress > 75) log.innerText = logSequence[3];
-                if (progress > 90) log.innerText = logSequence[4];
-
-            }, 250);
-        }
-
-        // Cmd+K Interaction (Purely visual/alert for now to maintain single-file simplicity)
-        document.addEventListener('keydown', (e) => {
-            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-                e.preventDefault();
-                alert("Obscura Command Palette: Search documentation, features, or scripts.");
-            }
-        });
-    </script>
+        </div>
+    </section>
 </body>
 </html>
