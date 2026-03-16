@@ -3,303 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Download Obscura | Premium Execution</title>
+    <title>Deploy Obscura</title>
     <style>
         :root {
-            --bg: #050505;
-            --purple: #ae47ff;
-            --purple-glow: rgba(174, 71, 255, 0.4);
-            --green: #00ff88;
+            --bg: #000000;
+            --accents-1: #111111;
+            --accents-2: #333333;
             --text-main: #ffffff;
-            --text-dim: rgba(255, 255, 255, 0.6);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --nav-bg: rgba(5, 5, 5, 0.8);
+            --text-mute: #888888;
+            --geist-blue: #0070f3;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', -apple-system, sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background-color: var(--bg);
-            background-image: radial-gradient(circle at 50% -20%, #1a0229 0%, transparent 50%);
             color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 120px 20px 60px;
+            font-family: 'Inter', -apple-system, sans-serif;
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; min-height: 100vh; padding: 20px;
         }
 
-        /* --- Navigation Bar (Matching Index) --- */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            padding: 20px 0;
-            z-index: 1000;
-            background: var(--nav-bg);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .nav-container {
-            width: 90%;
-            max-width: 1200px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            color: white;
-        }
-
-        .logo-box {
-            width: 35px;
-            height: 35px;
-            background: var(--purple);
-            border-radius: 8px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: 800;
-            box-shadow: 0 0 15px var(--purple-glow);
-        }
-
-        .nav-menu {
-            display: flex;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 6px;
-            border-radius: 12px;
-            list-style: none;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .nav-menu a {
-            text-decoration: none;
-            color: var(--text-dim);
-            padding: 8px 20px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            transition: 0.3s;
-        }
-
-        .nav-menu a:hover, .nav-menu a.active {
-            color: white;
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        /* --- Download Card Container --- */
-        .download-card {
-            background: linear-gradient(145deg, rgba(20, 20, 20, 0.6), rgba(5, 5, 5, 0.9));
-            border: 1px solid var(--glass-border);
-            width: 100%;
-            max-width: 600px;
-            border-radius: 24px;
-            padding: 40px;
-            position: relative;
+        .deploy-card {
+            width: 100%; max-width: 500px;
+            background: var(--accents-1);
+            border: 1px solid var(--accents-2);
+            border-radius: 12px; padding: 40px;
             box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-            min-height: 400px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
         }
 
-        /* --- Content States --- */
-        #initial-content, #loading-content, #final-content {
-            transition: opacity 0.5s ease, transform 0.5s ease;
+        h2 { font-size: 1.5rem; letter-spacing: -0.5px; margin-bottom: 12px; }
+        p { color: var(--text-mute); font-size: 0.95rem; margin-bottom: 32px; }
+
+        .loader-box { margin: 24px 0; }
+        .bar-bg { width: 100%; height: 2px; background: var(--accents-2); border-radius: 2px; overflow: hidden; }
+        .bar-fill { height: 100%; width: 0%; background: #fff; transition: width 0.3s ease; }
+
+        .log-text { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-mute); margin-bottom: 8px; }
+
+        .btn-deploy {
+            width: 100%; background: #fff; color: #000;
+            padding: 12px; border-radius: 6px; font-weight: 600;
+            border: none; cursor: pointer; transition: 0.2s;
         }
 
-        .hidden {
-            display: none !important;
-            opacity: 0;
-            transform: translateY(10px);
+        .btn-deploy:hover { filter: brightness(0.9); }
+        .hidden { display: none; }
+        .success-icon { color: var(--geist-blue); margin-bottom: 16px; font-size: 2rem; }
+
+        a.btn-final {
+            display: block; text-align: center; text-decoration: none;
+            background: var(--geist-blue); color: #fff;
+            padding: 12px; border-radius: 6px; font-weight: 600;
         }
-
-        /* --- Loading Bar Styling --- */
-        .loader-container {
-            text-align: center;
-            width: 100%;
-        }
-
-        .progress-track {
-            width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            margin: 20px 0;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .progress-fill {
-            width: 0%;
-            height: 100%;
-            background: var(--purple);
-            box-shadow: 0 0 15px var(--purple-glow);
-            transition: width 0.1s linear;
-        }
-
-        .status-text {
-            font-size: 0.9rem;
-            color: var(--purple);
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        /* --- Buttons --- */
-        .btn-action {
-            display: flex;
-            width: 100%;
-            background: var(--purple);
-            color: white;
-            text-decoration: none;
-            padding: 18px;
-            border-radius: 12px;
-            justify-content: center;
-            align-items: center;
-            gap: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            border: none;
-            transition: 0.3s;
-        }
-
-        .btn-action:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 20px var(--purple-glow);
-        }
-
-        .btn-success {
-            background: var(--green);
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
-        }
-
-        .btn-success:hover {
-            box-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
-        }
-
-        /* Typography */
-        h2 { font-size: 1.8rem; margin-bottom: 10px; }
-        .desc { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 30px; line-height: 1.6; }
-
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="nav-container">
-            <a href="index.html" class="logo-group">
-                <div class="logo-box">O</div>
-                <div style="font-weight: 700; letter-spacing: 1px;">OBSCURA</div>
-            </a>
-            <ul class="nav-menu">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="download.html" class="active">Downloads</a></li>
-                <li><a href="#">Admin</a></li>
-            </ul>
-            <div style="width: 100px;"></div> </div>
-    </nav>
-
-    <div class="download-card">
-        
-        <div id="initial-content">
-            <span style="color: var(--purple); font-weight: 700; font-size: 0.8rem; text-transform: uppercase;">Latest Stable Build</span>
-            <h2>Obscura Windows</h2>
-            <p class="desc">Version 2.4.1 • 6.4 MB<br>Optimized for Windows 10/11. Includes auto-injection and multi-API support.</p>
-            
-            <button class="btn-action" onclick="startDownloadSequence()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                Initialize Download
-            </button>
+    <div class="deploy-card">
+        <div id="step-1">
+            <h2>Ready to Deploy</h2>
+            <p>You are about to download Obscura v2.4.1. This build has been optimized for your environment.</p>
+            <button class="btn-deploy" onclick="startDeployment()">Initialize Deployment</button>
         </div>
 
-        <div id="loading-content" class="hidden loader-container">
-            <div class="status-text" id="loader-msg">Connecting to Server...</div>
-            <div class="progress-track">
-                <div class="progress-fill" id="bar"></div>
+        <div id="step-2" class="hidden">
+            <div class="log-text" id="log">checking_integrity...</div>
+            <div class="loader-box">
+                <div class="bar-bg"><div class="bar-fill" id="fill"></div></div>
             </div>
-            <p style="font-size: 0.8rem; color: var(--text-dim);">Fetching encrypted manifest from GoFile...</p>
+            <p style="font-size: 12px;">Compiling static assets from production clusters...</p>
         </div>
 
-        <div id="final-content" class="hidden" style="text-align: center;">
-            <div style="background: rgba(0, 255, 136, 0.1); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--green);">
-                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            </div>
-            <h2>Ready to Install</h2>
-            <p class="desc">Link generated successfully. Your download is secure and ready.</p>
-            <a href="https://gofile.io/d/jYQdZY" target="_blank" class="btn-action btn-success">
-                Download Obscura.zip
-            </a>
-            <p style="margin-top: 20px; font-size: 0.8rem; color: var(--text-dim); cursor: pointer;" onclick="location.reload()">Reset Session</p>
+        <div id="step-3" class="hidden" style="text-align: center;">
+            <div class="success-icon">✓</div>
+            <h2>Deployment Ready</h2>
+            <p>The manifest has been generated successfully.</p>
+            <a href="https://gofile.io/d/jYQdZY" class="btn-final">Download ZIP</a>
         </div>
-
     </div>
 
     <script>
-        function startDownloadSequence() {
-            const initial = document.getElementById('initial-content');
-            const loading = document.getElementById('loading-content');
-            const final = document.getElementById('final-content');
-            const bar = document.getElementById('bar');
-            const msg = document.getElementById('loader-msg');
+        function startDeployment() {
+            document.getElementById('step-1').classList.add('hidden');
+            document.getElementById('step-2').classList.remove('hidden');
 
-            // 1. Fade out initial
-            initial.style.opacity = '0';
-            initial.style.transform = 'translateY(-10px)';
+            const logs = ["fetching_binaries...", "verifying_checksums...", "signing_package...", "ready."];
+            const fill = document.getElementById('fill');
+            const log = document.getElementById('log');
+            let progress = 0;
 
-            setTimeout(() => {
-                initial.classList.add('hidden');
-                loading.classList.remove('hidden');
-                loading.style.opacity = '1';
-                loading.style.transform = 'translateY(0)';
-
-                // 2. Start Progress Bar Logic
-                let width = 0;
-                const messages = ["Connecting...", "Bypassing...", "Authenticating...", "Finalizing..."];
-                
-                const interval = setInterval(() => {
-                    if (width >= 100) {
-                        clearInterval(interval);
-                        showFinal();
-                    } else {
-                        width += Math.random() * 15; // Random jumps for "realistic" loading
-                        if (width > 100) width = 100;
-                        bar.style.width = width + '%';
-                        
-                        // Update messages based on progress
-                        if (width > 25) msg.innerText = messages[1];
-                        if (width > 60) msg.innerText = messages[2];
-                        if (width > 85) msg.innerText = messages[3];
-                    }
-                }, 400); // Speed of the load
-            }, 500);
-
-            function showFinal() {
-                setTimeout(() => {
-                    loading.style.opacity = '0';
-                    loading.style.transform = 'translateY(-10px)';
-                    
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
                     setTimeout(() => {
-                        loading.classList.add('hidden');
-                        final.classList.remove('hidden');
-                        final.style.opacity = '1';
-                        final.style.transform = 'translateY(0)';
+                        document.getElementById('step-2').classList.add('hidden');
+                        document.getElementById('step-3').classList.remove('hidden');
                     }, 500);
-                }, 500);
-            }
+                }
+                fill.style.width = progress + '%';
+                
+                if (progress > 25) log.innerText = logs[0];
+                if (progress > 50) log.innerText = logs[1];
+                if (progress > 80) log.innerText = logs[2];
+            }, 300);
         }
     </script>
 </body>
